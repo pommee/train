@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>train</title>
+</head>
+
+<body>
+    <div id="sidebar">
+        <img src="./src/assets/images/sidebar/collection.png" />
+        <img src="./src/assets/images/sidebar/coding.png" />
+        <img src="./src/assets/images/sidebar/history.png" />
+    </div>
+    <div id="content">
+        <div id="route-input-and-btn">
+            <div class="input-container">
+                <div class="select-wrapper">
+                    <select id="route-options">
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                        <option value="PUT">PUT</option>
+                        <option value="DELETE">DELETE</option>
+                    </select>
+                </div>
+                <div class="vl"></div>
+                <input type="text" id="route-input" name="name" placeholder="Enter URL" required minlength="4"
+                    value="https://pypi.org/pypi/pocker-tui/json" />
+            </div>
+            <button id="btn-send-request">Send</button>
+        </div>
+        <div id="request-headers">
+            <table id="request-table">
+                <thead>
+                    <tr>
+                        <th>Toggle</th>
+                        <th>Key</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody id="request-headers-body">
+                    <tr>
+                        <td>
+                            <input type="checkbox">
+                        </td>
+                        <td>
+                            <input type="text" class="input-field" placeholder="Key" />
+                        </td>
+                        <td>
+                            <input type="text" class="input-field" placeholder="Value" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="response">
+            <div id="response-topic-and-info">
+                <div id="response-topic">
+                    <button id="btn-body" class="btn-active">Body</button>
+                    <button id="btn-headers">Headers</button>
+                    <button id="btn-cookies">Cookies</button>
+                </div>
+                <div id="response-info">
+                    <p id="status-code"></p>
+                    <p id="response-time"></p>
+                    <p id="response-size"></p>
+                </div>
+            </div>
+            <div id="response-format">
+                <button>Pretty</button>
+                <button>Raw</button>
+                <button>Preview</button>
+            </div>
+            <div id="response-wrapper">
+                <div id="line-numbers"></div>
+                <pre id="json-output"></pre>
+            </div>
+            <div id="headers-table-container">
+                <table id="headers-table">
+                    <thead>
+                        <tr>
+                            <th>Key</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody id="headers-body">
+                        <!-- Headers will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="./src/main.js" type="module"></script>
+</body>
+
+
+
+</html>
