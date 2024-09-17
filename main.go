@@ -13,7 +13,6 @@ var assets embed.FS
 
 func main() {
 	app := NewApp()
-
 	// Create application with options
 	err := wails.Run(&options.App{
 		Title:  "train",

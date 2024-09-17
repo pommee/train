@@ -18,6 +18,8 @@ const responseWrapper = document.getElementById("response-wrapper");
 const headersTable = document.getElementById("headers-table-container");
 const headersBody = document.getElementById("headers-body");
 
+const responseFormatButtons = document.querySelectorAll("#response-format button");
+
 let lastResponse = null
 
 btnSendRequest.addEventListener("click", function (e) {
@@ -39,20 +41,6 @@ btnSendRequest.addEventListener("click", function (e) {
     }
 });
 
-function displayResponse() {
-
-    jsonOutput.innerHTML = ""
-    let currLastResponse = lastResponse
-    const lines = currLastResponse.Response.split('\n');
-
-    lineNumbers.innerHTML = lines.map((_, index) => index + 1).join('<br>');
-    jsonOutput.innerHTML = syntaxHighlight(currLastResponse.Response);
-
-    status.innerText = currLastResponse.Status
-    responseTime.innerText = currLastResponse.TotalTime + "ms"
-    responseSize.innerText = currLastResponse.Size
-}
-
 btnBody.addEventListener("click", () => {
     responseWrapper.style.display = "flex";
     headersTable.style.display = "none";
@@ -70,6 +58,27 @@ btnHeaders.addEventListener("click", () => {
     btnCookies.classList.remove("btn-active");
     displayHeaders()
 });
+
+responseFormatButtons.forEach(button => {
+    button.addEventListener("click", () => {
+        responseFormatButtons.forEach(btn => btn.classList.remove("active-response-format"));
+        button.classList.add("active-response-format");
+    });
+});
+
+function displayResponse() {
+
+    jsonOutput.innerHTML = ""
+    let currLastResponse = lastResponse
+    const lines = currLastResponse.Response.split('\n');
+
+    lineNumbers.innerHTML = lines.map((_, index) => index + 1).join('<br>');
+    jsonOutput.innerHTML = syntaxHighlight(currLastResponse.Response);
+
+    status.innerText = currLastResponse.Status
+    responseTime.innerText = currLastResponse.TotalTime + "ms"
+    responseSize.innerText = currLastResponse.Size
+}
 
 function displayHeaders() {
 

@@ -114,13 +114,12 @@ img {
     margin-top: 20px;
     padding: 10px;
     height: 95vh;
+    width: 94vw;
     overflow-y: auto;
 }
 
 #response-wrapper {
     margin-top: 20px;
-    border-radius: 5px;
-    width: 94vw;
     display: flex;
 }
 
@@ -155,6 +154,28 @@ img {
     height: fit-content;
     display: flex;
     margin-top: 10px;
+}
+
+#response-format button {
+    cursor: pointer;
+    background-color: #414141;
+    padding: 10px 20px 10px 20px;
+    border: transparent;
+    transition: background-color 0.4s, background-position 0.4s;
+    color: white;
+}
+
+#response-format button:first-child {
+    border-radius: 5px 0 0 5px;
+}
+
+#response-format button:last-child {
+    border-radius: 0 5px 5px 0;
+}
+
+#response-format .active-response-format {
+    background-color: rgb(107, 107, 107);
+    font-weight: bold;
 }
 
 #json-output {
@@ -196,9 +217,6 @@ pre {
 
 #headers-table-container {
     display: none;
-    overflow-x: auto;
-    overflow-y: auto;
-    height: 44vw;
 }
 
 #headers-table {
