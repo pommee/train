@@ -17,10 +17,12 @@ const btnCookies = document.getElementById("btn-cookies");
 const responseWrapper = document.getElementById("response-wrapper");
 const headersTable = document.getElementById("headers-table-container");
 const headersBody = document.getElementById("headers-body");
-
+const resizer = document.getElementById('resizer');
+const response = document.getElementById('response');
 const responseFormatButtons = document.querySelectorAll("#response-format button");
 
 let lastResponse = null
+let startY, startHeight;
 
 btnSendRequest.addEventListener("click", function (e) {
     console.log("Sending request to", routeInput.value)
@@ -57,6 +59,10 @@ btnHeaders.addEventListener("click", () => {
     btnHeaders.classList.add("btn-active");
     btnCookies.classList.remove("btn-active");
     displayHeaders()
+});
+
+document.getElementById('json-output').addEventListener('scroll', function () {
+    lineNumbers.scrollTop = jsonOutput.scrollTop;
 });
 
 responseFormatButtons.forEach(button => {
@@ -116,6 +122,23 @@ function syntaxHighlight(json) {
     });
 }
 
-document.getElementById('json-output').addEventListener('scroll', function () {
-    lineNumbers.scrollTop = jsonOutput.scrollTop;
-});
+const startResize = (e) => {
+    startY = e.clientY;
+    startHeight = parseFloat(getComputedStyle(response).height);
+
+    document.addEventListener('mousemove', resize);
+    document.addEventListener('mouseup', stopResize);
+};
+
+const resize = (e) => {
+    const newHeight = startHeight + (startY - e.clientY);
+    response.style.height = `${newHeight}px`;
+    response.style.top = 'auto';
+};
+
+const stopResize = () => {
+    document.removeEventListener('mousemove', resize);
+    document.removeEventListener('mouseup', stopResize);
+};
+
+resizer.addEventListener('mousedown', startResize);

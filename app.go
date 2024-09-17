@@ -40,32 +40,54 @@ type Response struct {
 	Headers   http.Header
 }
 
-func (a *App) SendRequest(URL string, method string) Response {
+func (a *App) SendRequest(URL, method string) Response {
 	start := time.Now()
 
 	req, err := http.NewRequest(method, URL, nil)
 	if err != nil {
-		return logError("Error creating the request:", err)
+		return a.logError("Error creating the request:", err)
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return logError("Error making the request:", err)
+		return a.logError("Error making the request:", err)
 	}
 	defer resp.Body.Close()
 
+	// Handle possible gzip encoding
 	var reader io.Reader = resp.Body
 	if strings.Contains(resp.Header.Get("Content-Encoding"), "gzip") {
-		// Handle gzip encoding
-		gzipReader, err := gzip.NewReader(reader)
-		if err != nil {
-			return logError("Error creating gzip reader:", err)
+		var gzipReader *gzip.Reader
+		if gzipReader, err = gzip.NewReader(reader); err != nil {
+			return a.logError("Error creating gzip reader:", err)
 		}
 		defer gzipReader.Close()
 		reader = gzipReader
 	}
 
-	// Read and process the response in chunks
+	// Read the response body
+	bodyContent, totalSize := a.readResponseBody(reader)
+
+	contentType := resp.Header.Get("Content-Type")
+	size := formatSize(totalSize)
+	output := handleResponseContent(contentType, bodyContent)
+	roundedTime := math.Round(time.Since(start).Seconds()*1000*100) / 100
+
+	return Response{
+		Response:  output,
+		Status:    resp.Status,
+		Size:      size,
+		TotalTime: roundedTime,
+		Headers:   resp.Header,
+	}
+}
+
+func (a *App) logError(message string, err error) Response {
+	fmt.Println(message, err)
+	return Response{}
+}
+
+func (a *App) readResponseBody(reader io.Reader) ([]byte, int) {
 	const bufferSize = 8192
 	buffer := make([]byte, bufferSize)
 	var bodyContent strings.Builder
@@ -81,21 +103,12 @@ func (a *App) SendRequest(URL string, method string) Response {
 			break
 		}
 		if err != nil {
-			return logError("Error reading the response body:", err)
+			a.logError("Error reading the response body:", err)
+			break
 		}
 	}
 
-	contentType := resp.Header.Get("Content-Type")
-	size := formatSize(totalSize)
-	output := handleResponseContent(contentType, []byte(bodyContent.String()))
-	roundedTime := math.Round(time.Since(start).Seconds()*1000*100) / 100
-
-	return Response{output, resp.Status, size, roundedTime, resp.Header}
-}
-
-func logError(message string, err error) Response {
-	fmt.Println(message, err)
-	return Response{}
+	return []byte(bodyContent.String()), totalSize
 }
 
 func formatSize(sizeBytes int) string {
