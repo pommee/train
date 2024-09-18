@@ -1,7 +1,6 @@
 import './style.css';
-import './app.css';
 
-import { SendRequest } from '../wailsjs/go/main/App';
+import { SendRequest, MinimizeWindow, MaximizeWindow, CloseWindow } from '../wailsjs/go/main/App';
 
 const btnSendRequest = document.getElementById("btn-send-request");
 const routeInput = document.getElementById("route-input")
@@ -20,9 +19,27 @@ const headersBody = document.getElementById("headers-body");
 const resizer = document.getElementById('resizer');
 const response = document.getElementById('response');
 const responseFormatButtons = document.querySelectorAll("#response-format button");
+const windowBarName = document.getElementById("window-bar-name");
+const windowMinimize = document.getElementById("window-minimize");
+const windowMaximize = document.getElementById("window-maximize");
+const windowClose = document.getElementById("window-close");
 
 let lastResponse = null
 let startY, startHeight;
+
+window.addEventListener("load", () => {
+    windowBarName.innerText = "train v1.0.0"
+});
+
+windowMinimize.addEventListener("click", () => {
+    MinimizeWindow()
+});
+windowMaximize.addEventListener("click", () => {
+    MaximizeWindow()
+});
+windowClose.addEventListener("click", () => {
+    CloseWindow()
+});
 
 btnSendRequest.addEventListener("click", function (e) {
     console.log("Sending request to", routeInput.value)

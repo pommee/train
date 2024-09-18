@@ -11,9 +11,10 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-// App struct
 type App struct {
 	ctx context.Context
 }
@@ -143,4 +144,14 @@ func handleResponseContent(contentType string, body []byte) string {
 	default:
 		return string(body)
 	}
+}
+
+func (a *App) MinimizeWindow() {
+	runtime.WindowMinimise(a.ctx)
+}
+func (a *App) MaximizeWindow() {
+	runtime.WindowToggleMaximise(a.ctx)
+}
+func (a *App) CloseWindow() {
+	runtime.Quit(a.ctx)
 }
