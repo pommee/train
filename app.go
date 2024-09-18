@@ -1,15 +1,13 @@
 package main
 
 import (
-	"compress/gzip"
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"html"
 	"io"
 	"math"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -55,29 +53,32 @@ func (a *App) SendRequest(URL, method string) Response {
 	}
 	defer resp.Body.Close()
 
-	// Handle possible gzip encoding
-	var reader io.Reader = resp.Body
-	if strings.Contains(resp.Header.Get("Content-Encoding"), "gzip") {
-		var gzipReader *gzip.Reader
-		if gzipReader, err = gzip.NewReader(reader); err != nil {
-			return a.logError("Error creating gzip reader:", err)
-		}
-		defer gzipReader.Close()
-		reader = gzipReader
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return Response{}
 	}
 
-	// Read the response body
-	bodyContent, totalSize := a.readResponseBody(reader)
-
 	contentType := resp.Header.Get("Content-Type")
-	size := formatSize(totalSize)
-	output := handleResponseContent(contentType, bodyContent)
+	var prettyBody string
+
+	if contentType == "application/json" {
+		var prettyJSON bytes.Buffer
+		err = json.Indent(&prettyJSON, body, "", "  ")
+		if err != nil {
+			prettyBody = string(body)
+		} else {
+			prettyBody = prettyJSON.String()
+		}
+	} else {
+		prettyBody = string(body)
+	}
+
 	roundedTime := math.Round(time.Since(start).Seconds()*1000*100) / 100
 
 	return Response{
-		Response:  output,
+		Response:  prettyBody,
 		Status:    resp.Status,
-		Size:      size,
+		Size:      fmt.Sprintf("%d bytes", len(body)),
 		TotalTime: roundedTime,
 		Headers:   resp.Header,
 	}
@@ -86,64 +87,6 @@ func (a *App) SendRequest(URL, method string) Response {
 func (a *App) logError(message string, err error) Response {
 	fmt.Println(message, err)
 	return Response{}
-}
-
-func (a *App) readResponseBody(reader io.Reader) ([]byte, int) {
-	const bufferSize = 8192
-	buffer := make([]byte, bufferSize)
-	var bodyContent strings.Builder
-	totalSize := 0
-
-	for {
-		n, err := reader.Read(buffer)
-		if n > 0 {
-			bodyContent.Write(buffer[:n])
-			totalSize += n
-		}
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			a.logError("Error reading the response body:", err)
-			break
-		}
-	}
-
-	return []byte(bodyContent.String()), totalSize
-}
-
-func formatSize(sizeBytes int) string {
-	switch {
-	case sizeBytes >= 1024*1024:
-		return fmt.Sprintf("%.2f MB", float64(sizeBytes)/(1024*1024))
-	case sizeBytes >= 1024:
-		return fmt.Sprintf("%.2f KB", float64(sizeBytes)/1024)
-	default:
-		return fmt.Sprintf("%d bytes", sizeBytes)
-	}
-}
-
-func handleResponseContent(contentType string, body []byte) string {
-	switch {
-	case strings.Contains(contentType, "application/json"):
-		var response interface{}
-		if err := json.Unmarshal(body, &response); err != nil {
-			fmt.Println("Error parsing JSON:", err)
-			return ""
-		}
-		prettyJSON, err := json.MarshalIndent(response, "", "  ")
-		if err != nil {
-			fmt.Println("Error formatting JSON:", err)
-			return ""
-		}
-		return html.UnescapeString(string(prettyJSON))
-
-	case strings.Contains(contentType, "text/html"):
-		return string(body)
-
-	default:
-		return string(body)
-	}
 }
 
 func (a *App) MinimizeWindow() {

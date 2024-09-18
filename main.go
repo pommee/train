@@ -18,6 +18,8 @@ func main() {
 		Title:     "train",
 		Width:     1200,
 		Height:    800,
+		MinWidth:  1000,
+		MinHeight: 600,
 		Frameless: true,
 		AssetServer: &assetserver.Options{
 			Assets: assets,

@@ -62,24 +62,23 @@ body {
     justify-content: flex-start;
     height: 100vh;
     background-color: #212121;
-    width: 4vw;
+    width: 3vw;
     position: fixed;
 }
 
 img {
     margin-top: 40px;
-    width: 1.5vw;
+    width: 60%;
     /* Image is black by default, make it white. */
     filter: invert(1) brightness(2);
 }
 
 #content {
-    margin-top: 30px;
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
-    width: calc(100vw - 4vw);
+    width: 100vw;
     height: 100vh;
-    padding: 20px;
     box-sizing: border-box;
     margin-left: 4vw;
 }
@@ -87,14 +86,14 @@ img {
 #route-input-and-btn {
     display: flex;
     gap: 10px;
-    width: 90vw;
+    width: 95vw;
     align-items: center;
 }
 
 .input-container {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     border: 1px solid cornflowerblue;
     border-radius: 5px;
     padding-left: 10px;
@@ -104,6 +103,17 @@ img {
 .select-wrapper {
     position: relative;
     display: inline-block;
+}
+
+.select-wrapper::after {
+    content: '\25BC';
+    /* Unicode for down arrow */
+    position: absolute;
+    right: 1px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: gray;
+    pointer-events: none;
 }
 
 #route-options {
@@ -118,17 +128,6 @@ img {
     -moz-appearance: none;
 }
 
-.select-wrapper::after {
-    content: '\25BC';
-    /* Unicode for down arrow */
-    position: absolute;
-    right: 1px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: gray;
-    pointer-events: none;
-}
-
 .vl {
     border-left: 2px solid gray;
     height: 25px;
@@ -137,7 +136,6 @@ img {
 #route-input {
     width: 100%;
     height: 40px;
-    padding: 5px;
     background-color: transparent;
     color: white;
     border: none;
@@ -145,26 +143,28 @@ img {
 }
 
 #btn-send-request {
+    cursor: pointer;
     background-color: cornflowerblue;
     border: transparent;
     border-radius: 4px;
     color: white;
     width: 6vw;
-    padding: 8px;
+    height: 90%;
+    font-weight: bold;
 }
 
 #response {
     position: fixed;
     bottom: 0;
     margin-bottom: 10px;
-    width: 94vw;
-    padding: 10px;
+    height: 50vh;
+    width: 95vw;
+    padding: 6px;
     background-color: #222222;
     border: 1px solid cornflowerblue;
     border-radius: 5px;
     min-height: 20vh;
     max-height: 70vh;
-    height: 50vh;
     overflow-y: auto;
     box-sizing: border-box;
 }
@@ -195,7 +195,6 @@ img {
 
 #json-output {
     padding-left: 10px;
-    margin: 0;
     text-align: left;
     width: 100vw;
     overflow-y: auto;
@@ -215,11 +214,6 @@ img {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-}
-
-.btn-active {
-    border: 1px solid cornflowerblue;
-    font-weight: bold;
 }
 
 #response-format {
@@ -328,28 +322,27 @@ pre {
 #request-headers {
     margin-top: 20px;
     border-collapse: collapse;
-    width: 100%;
 }
 
 #request-headers table {
-    width: 100%;
+    width: 95vw;
     border-collapse: collapse;
 }
 
 #request-headers th,
 #request-headers td {
-    border: 1px solid rgba(169, 169, 169, 0.479);
+    border: 1px solid rgba(88, 88, 88, 0.479);
     padding: 6px;
     text-align: left;
 }
 
 #request-headers tr {
-    border: 1px solid rgba(169, 169, 169, 0.479);
+    border: 1px solid rgba(88, 88, 88, 0.479);
 }
 
 #request-headers th {
     background-color: transparent;
-    border: 1px solid rgba(169, 169, 169, 0.479);
+    border: 1px solid rgba(88, 88, 88, 0.479);
     color: gray;
 }
 
